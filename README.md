@@ -49,7 +49,7 @@ class ks_gini_cap30_AUC.ks_gini_cap30_AUC(classes,model_predict_proba,y,do_cate=
   * Parameters: \
   **Title:str,圖片標題** \
   **figsize:(float,float),圖片長寬大小** \
-  **fontsize:float,字體大小**
+  **fontsize:float,字體大小** \
   **save:str,儲存圖檔名稱(None時不存檔)**
 
 ## Demo

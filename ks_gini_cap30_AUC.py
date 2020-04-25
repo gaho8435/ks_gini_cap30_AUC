@@ -72,8 +72,9 @@ class ks_gini_cap30_AUC():
                       pd.DataFrame(predict,columns = columns_prob),
                       left_index = True, right_index = True)
         if num <= self.classes: #Y處理
-            df.loc[df.y == num, 'y'] = 1
-            df.loc[df.y != num, 'y'] = 0
+            df.loc[df.y == num, 'y'] = -1
+            df.loc[df.y != -1, 'y'] = 0
+            df.loc[df.y == -1, 'y'] = 1
         else:
             print('num is wrong!')
         df_ = df.sort_values(by = columns_prob[num],ascending = False)
@@ -90,8 +91,9 @@ class ks_gini_cap30_AUC():
                       pd.DataFrame(predict,columns = columns_prob),
                       left_index = True, right_index = True)
         if num <= self.classes: #Y處理
-            df.loc[df.y == num, 'y'] = 1
-            df.loc[df.y != num, 'y'] = 0
+            df.loc[df.y == num, 'y'] = -1
+            df.loc[df.y != -1, 'y'] = 0
+            df.loc[df.y == -1, 'y'] = 1
         else:
             print('num is wrong!')
         output = []
@@ -111,8 +113,9 @@ class ks_gini_cap30_AUC():
                       pd.DataFrame(predict,columns = columns_prob),
                       left_index = True, right_index = True)
         if num <= self.classes: #Y處理
-            df.loc[df.y == num, 'y'] = 1
-            df.loc[df.y != num, 'y'] = 0
+            df.loc[df.y == num, 'y'] = -1
+            df.loc[df.y != -1, 'y'] = 0
+            df.loc[df.y == -1, 'y'] = 1
         else:
             print('num is wrong!')
         gini_list = []
@@ -137,7 +140,6 @@ class ks_gini_cap30_AUC():
 ############################計算num類別預測結果,以機率排序切成十等分############################
 #########################################分類每等分細節#########################################
     def calculate_detail(self, num = 1):
-        tStart = time.time()
         output = []
         predict = copy.deepcopy(self.model_predict_proba)
         columns_prob = []
@@ -147,8 +149,9 @@ class ks_gini_cap30_AUC():
                       pd.DataFrame(predict,columns = columns_prob),
                       left_index = True, right_index = True)
         if num <= self.classes: #Y處理
-            df.loc[df.y == num, 'y'] = 1
-            df.loc[df.y != num, 'y'] = 0
+            df.loc[df.y == num, 'y'] = -1
+            df.loc[df.y != -1, 'y'] = 0
+            df.loc[df.y == -1, 'y'] = 1
         else:
             print('num is wrong!')
         for i in range(1,11): #排序並計算
@@ -168,61 +171,12 @@ class ks_gini_cap30_AUC():
             else:
                 df_output['Gini'][i] = ((df_output['累積y'][i]-df_output['累積y'][i-1])/df_output['累積y'][9])*((df_output['累積人數'][i]-df_output['累積人數'][i-1])/df_output['累積人數'][9])
         
-        tEnd = time.time()
-        print('Cost ' + str(round(tEnd - tStart,2)) + 's')
         return df_output
-    
-    
-############################計算num類別預測結果,以機率排序切成十等分############################
-#####################################只Output出最後衡量數值#####################################
-    def calculate_result(self,num = 1,do_all = False):
-        tStart = time.time()
-        predict = copy.deepcopy(self.model_predict_proba)
-        columns_prob = []
-        for i in range(self.classes):
-            columns_prob.append('prob_' + str(i))
-        if do_all == False:
-            df_output = self.calculate_detail(num)
-            output_1 = []
-            cap30 = sum(df_output['y'][:3])/df_output['累積y'][9]
-            output_1.append([max(df_output['KS']),
-                             1 - sum(df_output['Gini']),
-                             cap30,
-                             self.roc_auc[num]])
-            df_output_1 = pd.DataFrame(output_1,columns = ['KS','Gini','cap30','AUC'])
-            df_output_1 = df_output_1.set_index(pd.Index([num]))
-        elif do_all == True:
-            output_1 = []
-            for j in range(1,self.classes):
-                df_output = self.calculate_detail(j)
-                cap30 = sum(df_output['y'][:3])/df_output['累積y'][9]
-                output_1.append([max(df_output['KS']),
-                                 1 - sum(df_output['Gini']),
-                                 cap30,
-                                 self.roc_auc[j]])
-            #計算平均
-            output_1 = np.array(output_1).T.tolist()
-            for i in range(np.shape(output_1)[0]):
-                output_1[i].append(np.average(df_output[i]))
-            output_1 = np.array(output_1).T.tolist()
-            df_output_1 = pd.DataFrame(output_1,columns = ['KS','Gini','cap30','AUC'])
-            index = []
-            for i in range(1,self.classes):
-                index.append(i)
-            index.append('Average')
-            df_output_1 = df_output_1.set_index(pd.Index(index))
-        else:
-            print('do all? Enter True or False.')
-        
-        tEnd = time.time()
-        print('Cost ' + str(round(tEnd - tStart,2)) + 's')
-        return df_output_1
     
 
 #############################劃出各類別的ROC CURVE及AUC#############################
-    def ROC_AUC_plot(self, Title = '', fontsize = 12):
-        tStart = time.time()
-        plt.figure(figsize = (10,8))
+    def ROC_AUC_plot(self, Title = '',figsize = (10,8), fontsize = 12):
+        plt.figure(figsize = figsize)
         plt.style.use('seaborn')
         plt.plot(self.fpr['macro'], self.tpr['macro'],
                  label = 'macro-avg ROC curve(AUC={0:0.2f})'.format(self.roc_auc['macro']),
@@ -239,7 +193,5 @@ class ks_gini_cap30_AUC():
         plt.tick_params(axis = 'y', labelsize = fontsize)
         plt.xlim([-0.05,1.05])
         plt.ylim([-0.05,1.05])
-        tEnd = time.time()
-        print('Cost ' + str(round(tEnd - tStart,2)) + 's')
         plt.show()
     

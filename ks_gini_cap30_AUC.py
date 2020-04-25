@@ -15,7 +15,7 @@ from sklearn.metrics import roc_auc_score
 
 
 class ks_gini_cap30_AUC():
-    def __init__(self, classes, model_predict_proba, y, do_cate=False):
+    def __init__(self, classes, model_predict_proba, y, do_cate=True):
         tStart = time.time()
         self.classes = classes #類別數,包含0
         self.model_predict_proba = model_predict_proba #預測機率
@@ -134,7 +134,7 @@ class ks_gini_cap30_AUC():
         result = []
         result.append([self.calculate_ks(num = num),self.calculate_gini(num = num),
                        self.calculate_cap30(num = num),self.calculate_auc(num = num)])
-        df = pd.DataFrame(result, columns = ['ks','gini','cap30','auc'])
+        df = pd.DataFrame(result, columns = ['ks','gini','cap30','auc'],index=[[num]])
         return df
 
 ############################計算num類別預測結果,以機率排序切成十等分############################
@@ -175,8 +175,8 @@ class ks_gini_cap30_AUC():
     
 
 #############################劃出各類別的ROC CURVE及AUC#############################
-    def ROC_AUC_plot(self, Title = '',figsize = (10,8), fontsize = 12):
-        plt.figure(figsize = figsize)
+    def ROC_AUC_plot(self, Title = '',figsize = (10,8), fontsize = 12, save = None):
+        plt.figure(figsize = (10,8))
         plt.style.use('seaborn')
         plt.plot(self.fpr['macro'], self.tpr['macro'],
                  label = 'macro-avg ROC curve(AUC={0:0.2f})'.format(self.roc_auc['macro']),
@@ -193,5 +193,7 @@ class ks_gini_cap30_AUC():
         plt.tick_params(axis = 'y', labelsize = fontsize)
         plt.xlim([-0.05,1.05])
         plt.ylim([-0.05,1.05])
+        if (save):
+            plt.savefig(save)
         plt.show()
     

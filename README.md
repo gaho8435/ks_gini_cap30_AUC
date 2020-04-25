@@ -104,7 +104,7 @@ result = ks_gini_cap30_AUC(classes = 2, model_predict_proba = clf.predict_proba(
 result.ROC_AUC_plot(figsize = (8,6),fontsize = 14,save = 'ROC_curve')
 ```
 
-![ROC_curve](ROC_curve.png)
+![ROC_curve](fig/ROC_curve.png)
 
 #### 
 ```python

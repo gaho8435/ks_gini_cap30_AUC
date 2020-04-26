@@ -27,9 +27,9 @@
   AUC < 0.5，比隨機猜測還差；但只要總是反預測而行，就優於隨機猜測。
 
 ## Document 
-class ks_gini_cap30_AUC.ks_gini_cap30_AUC(classes,model_predict_proba,y,do_cate=True)
+class ks_gini_cap30_AUC.ks_gini_cap30_AUC(classes, model_predict_proba, y, do_cate=True)
 
-class ks_gini_cap30_AUC_multilabel.ks_gini_cap30_AUC(classes,model_predict_proba,y,do_cate=True)
+class ks_gini_cap30_AUC_multilabel.ks_gini_cap30_AUC(classes, model_predict_proba,y, do_cate=True)
 
 **Parameters:**
 * classes:int,類別個數
@@ -84,14 +84,14 @@ data_y = pd.read_csv('data\data_y.csv')
 
 #### train & test set
 ```python
-train_x , test_x , train_y , test_y = train_test_split(data_x, data_y, test_size=0.2, random_state=42)
+train_x , test_x , train_y , test_y = train_test_split(data_x, data_y, test_size = 0.2, random_state = 42)
 ```
 
 #### 建立RandomForest Model
 ```python
-clf = RandomForestClassifier(n_estimators=100,
-                             n_jobs=-1,
-                             random_state=42)
+clf = RandomForestClassifier(n_estimators = 100,
+                             n_jobs = -1,
+                             random_state = 42)
 ```
 
 #### Model fit
@@ -112,7 +112,7 @@ result = ks_gini_cap30_AUC(classes = 2, model_predict_proba = clf.predict_proba(
 
 #### 
 ```python
-result.ROC_AUC_plot(figsize = (8,6),fontsize = 14,save = 'ROC_curve')
+result.ROC_AUC_plot(figsize = (8,6), fontsize = 14, save = 'ROC_curve')
 ```
 
 ![ROC_curve](fig/ROC_curve.png)

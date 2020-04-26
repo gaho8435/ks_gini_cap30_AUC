@@ -14,8 +14,17 @@
 ## 參數介紹
 * ks:
 * gini:
-* cap30:
-* AUC:
+* cap30: \
+  依照預測機率排序，前30%數據包含全體數據多少預測正確。
+* AUC: \
+  ROC曲線下方的面積（Area under the Curve of ROC (AUC)），其意義是： \
+  若隨機抽取一個陽性樣本和一個陰性樣本，分類器正確判斷陽性樣本的值高於陰性樣本之機率。簡單說：AUC值越大的分類器，正確率越高。 \
+
+  從AUC判斷分類器（預測模型）優劣的標準： \
+  AUC = 1，是完美分類器，採用這個預測模型時，存在至少一個閾值能得出完美預測。絕大多數預測的場合，不存在完美分類器。 \
+  0.5 < AUC < 1，優於隨機猜測。這個分類器（模型）妥善設定閾值的話，能有預測價值。 \
+  AUC = 0.5，跟隨機猜測一樣（例：丟銅板），模型沒有預測價值。 \
+  AUC < 0.5，比隨機猜測還差；但只要總是反預測而行，就優於隨機猜測。
   
 ## Document
 class ks_gini_cap30_AUC.ks_gini_cap30_AUC(classes,model_predict_proba,y,do_cate=True)
@@ -162,4 +171,7 @@ result.calculate_detail(num = 1)
 |  9 |     10 |    142 |       1416 |   1 |     253 | 0.00704225 | 0         | 0.000396373 |
 
 ## TODO
+Multi-label classification
 
+## Feedback
+若要修改code歡迎直接送pull request。

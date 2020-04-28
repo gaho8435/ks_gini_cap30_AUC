@@ -128,7 +128,7 @@ result.calculate_ks(num = 1)
 ```python
 result.calculate_gini(num = 1)
 
-> 0.899977110828253
+> 0.5940711462450592
 ```
 
 #### 

@@ -113,12 +113,11 @@ class ks_gini_cap30_AUC():
         gini_list = []
         for i in range(1,11): #計算Gini
             if i == 1:
-                gini_list.append((sum(df.sort_values(by = columns_prob,ascending=False)[:round(np.shape(df)[0]*i/10)]['y'])/                                        
-                                  sum(df['y']))*(round(len(df)*i/10)/len(df)))
+                gini_list.append((sum(df.sort_values(by = columns_prob,ascending=False)[:round(len(df)/10)]['y'])/ \
+                                        sum(df['y']))*0.1)
             else:
-                gini_list.append(((sum(df.sort_values(by = columns_prob,ascending=False)[:round(np.shape(df)[0]*i/10)]['y']) -                                      
-                                   sum(df.sort_values(by = columns_prob,ascending=False)[:round(np.shape(df)[0]*(i-1)/10)]['y']))/sum(df['y']))*                                     
-                                 ((round(len(df)*i/10)-round(len(df)*(i-1)/10))/len(df)))
+                gini_list.append((sum(df.sort_values(by = columns_prob,ascending=False)[round(len(df)*(i-1)/10):round(len(df)*i/10)]['y'])/ \
+                                  sum(df['y']))*(2*i-1)/10)
         gini = 1-sum(gini_list)
         return gini
     
@@ -149,11 +148,15 @@ class ks_gini_cap30_AUC():
                            abs(round(np.shape(df)[0]*i/10)/np.shape(df)[0] - sum(df.sort_values(by = columns_prob,ascending=False)[:round(np.shape(df)[0]*i/10)]['y'])/sum(df['y'])),
                            0.]) #預留Gini位置
         df_output = pd.DataFrame(output,columns = ['rank','人數','累積人數','y','累積y','y率','KS','Gini'])
-        for i in range(10): #計算Gini
-            if i == 0:
-                df_output['Gini'][i] = (df_output['累積y'][i]/df_output['累積y'][9])*(df_output['累積人數'][i]/df_output['累積人數'][9])
+        gini_list = []
+        for i in range(1,11): #計算Gini
+            if i == 1:
+                gini_list.append((sum(df.sort_values(by = columns_prob,ascending=False)[:round(len(df)/10)]['y'])/ \
+                                        sum(df['y']))*0.1)
             else:
-                df_output['Gini'][i] = ((df_output['累積y'][i]-df_output['累積y'][i-1])/df_output['累積y'][9])*((df_output['累積人數'][i]-df_output['累積人數'][i-1])/df_output['累積人數'][9])
+                gini_list.append((sum(df.sort_values(by = columns_prob,ascending=False)[round(len(df)*(i-1)/10):round(len(df)*i/10)]['y'])/ \
+                                  sum(df['y']))*(2*i-1)/10)
+        df_output['Gini'] = gini_list
         
         return df_output
     
